@@ -1,0 +1,127 @@
+<html>
+<head>
+  <title>Shooting Game</title>
+  <style>
+    #game-canvas {
+      border: 1px solid black;
+    }
+
+#score {
+  font-family: sans-serif;
+  font-size: 20px;
+}
+  </style>
+</head>
+<body>
+  <h1>Shooting Game</h1>
+<canvas id="game-canvas" width="500" height="500"></canvas>
+
+  <div id="score">Score: 0</div>
+  <script>
+    // Set up canvas and game variables
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    let score = 0;
+
+    // Set up player and enemy variables
+    let playerX = canvas.width / 2;
+    let playerY = canvas.height - 50;
+    let enemyX = Math.random() * canvas.width;
+    let enemyY = 0;
+    let enemySpeed = 2;
+    let enemyWidth = 50;
+    let enemyHeight = 50;
+
+    // Set up bullet variables
+    let bulletX = playerX;
+    let bulletY = playerY;
+    let bulletSpeed = 10;
+    let bulletWidth = 10;
+    let bulletHeight = 10;
+
+    // Set up event listeners for player movement
+    document.addEventListener('keydown', keyDownHandler);
+
+    function keyDownHandler(e) {
+      if (e.keyCode === 37) { // left arrow
+        playerX -= 10;
+      } else if (e.keyCode === 39) { // right arrow
+        playerX += 10;
+      } else if (e.keyCode === 32) { // spacebar
+        shootBullet();
+      }
+    }
+
+    function shootBullet() {
+      bulletX = playerX;
+      bulletY = playerY;
+    }
+
+    // Game loop
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw player
+      ctx.beginPath();
+      ctx.rect(playerX, playerY, 50, 50);
+      ctx.fillStyle = 'green';
+      ctx.fill();
+      ctx.closePath();
+
+      // Draw enemy
+      ctx.beginPath();
+      ctx.rect(enemyX, enemyY, enemyWidth, enemyHeight);
+      ctx.fillStyle = 'red';
+      ctx.fill();
+      ctx.closePath();
+
+      // Draw bullet
+      ctx.beginPath();
+      ctx.rect(bulletX, bulletY, bulletWidth, bulletHeight);
+      ctx.fillStyle = 'yellow';
+      ctx.fill();
+      ctx.closePath();
+
+      // Move enemy down
+      enemyY += enemySpeed;
+
+      // Move bullet up
+      bulletY -= bulletSpeed;
+
+      // Check for collision between enemy and bullet
+      if (
+        bulletX < enemyX + enemyWidth &&
+        bulletX + bulletWidth > enemyX &&
+        bulletY < enemyY + enemyHeight &&
+        bulletY + bulletHeight > enemyY
+      ) {
+        // If collision detected, increment score and reset enemy position
+        score++;
+        document.
+        getElementById('score').innerHTML = 'Score: ' + score;
+enemyX = Math.random() * canvas.width;
+enemyY = 0;
+}
+
+  // Check if enemy has reached bottom of canvas
+  if (enemyY > canvas.height) {
+    // If enemy reaches bottom, reset enemy position and decrease player's life
+    enemyX = Math.random() * canvas.width;
+    enemyY = 0;
+  }
+
+  // Check if bullet has reached top of canvas
+  if (bulletY < 0) {
+    // If bullet reaches top, reset bullet position
+    bulletX = playerX;
+    bulletY = playerY;
+  }
+
+  // Keep game loop running
+  requestAnimationFrame(draw);
+}
+
+draw();
+  </script>
+</body>
+</html>
